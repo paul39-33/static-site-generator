@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_eq(self):
@@ -38,6 +38,30 @@ class TestHTMLNode(unittest.TestCase):
         # Check the rendered HTML
         expected_html = '<a href="https://boot.dev" class="external-link primary-btn" id="learn-coding-link" target="_blank">Visit Boot.dev</a>'
         self.assertEqual(node.to_html(), expected_html)
+
+    def test_to_html_with_children(self):
+        child_node = LeafNode("span", "child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><span>child</span></div>")
+
+    def test_to_html_with_grandchildren(self):
+        grandchild_node = LeafNode("b", "grandchild")
+        child_node = ParentNode("span", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            parent_node.to_html(),
+            "<div><span><b>grandchild</b></span></div>",
+        )
+
+    def test_to_html_empty_child(self):
+        child_node = LeafNode("p", "this is a child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><p>this is a child</p></div>")
+        with self.assertRaises(ValueError) as cm:
+            parent_node = ParentNode("div", [])
+            parent_node.to_html()
+        self.assertEqual(str(cm.exception), "ParentNode must have children")
+
 
 if __name__ == "__main__":
     unittest.main()
