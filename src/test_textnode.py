@@ -289,8 +289,6 @@ class TestTextNode(unittest.TestCase):
         
         # Print for debugging
         print(f"Number of nodes in result: {len(new_nodes)}")
-        for i, node in enumerate(new_nodes):
-            print(f"Node {i}: text='{node.text}', type={node.text_type}, url={node.url}")
         
         # Test what extract_markdown_links actually returns
         links = extract_markdown_links(node1.text)
@@ -298,6 +296,57 @@ class TestTextNode(unittest.TestCase):
         
         # Basic check that should pass if your function processes all nodes
         self.assertTrue(len(new_nodes) > 3)  # At minimum we expect results from both nodes
+
+    def test_text_to_textnodes(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+
+        new_nodes = text_to_textnodes(text)
+
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev")
+            ], new_nodes
+        )
+    
+    def test_text_to_textnodes_bold_url(self):
+        text = "This is a [**bold link**](url)"
+
+        new_nodes = text_to_textnodes(text)
+
+        self.assertListEqual(
+            [
+                TextNode("This is a ", TextType.TEXT),
+                TextNode("**bold link**", TextType.LINK, "url")
+            ], new_nodes
+        )
+
+    def test_text_to_textnodes_multiple_adjacent(self):
+        text = "This is a **bold**`code` so close to [link](url)_italic_ and ![img](url)**bold**"
+
+        new_nodes = text_to_textnodes(text)
+
+        self.assertListEqual(
+            [
+                TextNode("This is a ", TextType.TEXT),
+                TextNode("bold", TextType.BOLD),
+                TextNode("code", TextType.CODE),
+                TextNode(" so close to ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "url"),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("img", TextType.IMAGE, "url"),
+                TextNode("bold", TextType.BOLD)
+            ], new_nodes
+        )
 
 
 if __name__ == "__main__":
