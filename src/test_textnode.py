@@ -287,12 +287,9 @@ class TestTextNode(unittest.TestCase):
         node2 = TextNode("Second [link2](url2.com) text", TextType.TEXT)
         new_nodes = split_nodes_link([node1, node2])
         
-        # Print for debugging
-        print(f"Number of nodes in result: {len(new_nodes)}")
         
         # Test what extract_markdown_links actually returns
         links = extract_markdown_links(node1.text)
-        print(f"Extracted links from node1: {links}")
         
         # Basic check that should pass if your function processes all nodes
         self.assertTrue(len(new_nodes) > 3)  # At minimum we expect results from both nodes
@@ -346,6 +343,54 @@ class TestTextNode(unittest.TestCase):
                 TextNode("img", TextType.IMAGE, "url"),
                 TextNode("bold", TextType.BOLD)
             ], new_nodes
+        )
+
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+
+    def test_markdown_to_blocks2(self):
+        md = """
+This is a _italic_ paragraph
+
+
+
+
+
+Soooo many spaces
+
+
+-Ooooh
+
+
+
+-Yeaaa
+        """
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is a _italic_ paragraph",
+                "Soooo many spaces",
+                "-Ooooh",
+                "-Yeaaa",
+            ],
         )
 
 
