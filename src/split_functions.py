@@ -123,11 +123,6 @@ def text_to_textnodes(text):
 
     return final_nodes
 
-def markdown_to_blocks(markdown):
-    clean_excess_newlines = re.sub(r'\n{3,}', '\n\n', markdown)
-    strip_whitespace = clean_excess_newlines.strip()
-    split_the_newlines = strip_whitespace.split('\n\n')
-    print(f"result: {split_the_newlines}")
-    return split_the_newlines
+
         
             
