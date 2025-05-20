@@ -6,7 +6,7 @@ class HTMLNode:
         self.props = props
 
     def to_html(self):
-        print(f"\n\n\ntag: {self.tag}, value: {self.value}, children: {self.children}, props: {self.props}\n\n\n")
+        #print(f"\n\n\ntag: {self.tag}, value: {self.value}, children: {self.children}, props: {self.props}\n\n\n")
         #raise NotImplementedError
         final_html_text =''
 
@@ -23,20 +23,18 @@ class HTMLNode:
 
         final_html_text += ">"
 
-        print(f"html_text0: {final_html_text}")
+        #print(f"html_text0: {final_html_text}")
 
         if self.children:
 
             for child in self.children:
                 child_html_text = child.to_html()
-                '''if child.tag:
-                    child_html_text += f"</{child.tag}>"'''
-                print(f"child_html_text: {child_html_text}")
+                #print(f"child_html_text: {child_html_text}")
                 final_html_text += child_html_text
 
         
         final_html_text += f"</{self.tag}>"
-        print(f"\n\nFINAL HTML TEXT: {final_html_text}\n\n\n")        
+        #print(f"\n\nFINAL HTML TEXT: {final_html_text}\n\n\n")        
         return final_html_text
 
     
@@ -72,7 +70,7 @@ class LeafNode(HTMLNode):
         
         #Example <a href="https://boot.dev">Visit Boot.dev</a>
         html_node = f"<{self.tag}{props_html}>{self.value}</{self.tag}>"
-        print(f"=========to_html: {html_node}")
+        #print(f"=========to_html: {html_node}")
         return html_node
 
 class ParentNode(HTMLNode):

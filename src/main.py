@@ -1,15 +1,56 @@
 from textnode import *
 from htmlnode import *
+from blocks import *
+import os
+import shutil
 
 def main():
-    tes1 = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    tes2 = HTMLNode("p", "Lorem ipsum dolor sit amet consectetur adipiscing elit.", 
-    props={
-    "href": "https://www.google.com",
-    "target": "_blank",
-})
-    print(f"tes1 : {tes1}")
-    print(f"tes2 : {tes2}")
-    print(f"tes2 props_to_html : {tes2.props_to_html()}")
 
-main()
+    #delete public dir before remaking it
+    if os.path.exists("../public"):
+        shutil.rmtree("../public")
+    
+    os.mkdir("../public")
+    copy_files(os.path.abspath("../static"), os.path.abspath("../public"))
+
+
+
+def copy_files(source, target):
+    path = source
+
+    print(f"src : {source}, target: {target}")
+    #Raise error if dir doesn't exist
+    if not os.path.exists(source) or not os.path.exists(target):
+        raise NameError("Path not exists!")
+    
+    print(f"src files: {os.listdir(source)}, target files: {os.listdir(target)}")
+
+    for item in os.listdir(source):
+        print(f"curr item: {item}")
+    
+        #if current item is a dir
+        if os.path.isdir(os.path.join(source, item)):
+            #new path for recursion, create new dir in target
+            next_path = os.path.join(source, item)
+            new_dir = os.path.join(target, item)
+            os.mkdir(new_dir)
+            copy_files(next_path, new_dir)
+    
+        else:
+            #if current item is a file
+            file_loc = os.path.join(source, item)
+            shutil.copy(file_loc, target)
+        
+    return 
+
+
+
+
+    
+
+        
+
+
+
+if __name__ == "__main__":
+    main()
