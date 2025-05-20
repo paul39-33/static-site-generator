@@ -7,11 +7,13 @@ import shutil
 def main():
 
     #delete public dir before remaking it
-    if os.path.exists("../public"):
-        shutil.rmtree("../public")
+    source_dir = os.path.abspath("static")
+    target_dir = os.path.abspath("public")
+    if os.path.exists(target_dir):
+        shutil.rmtree(target_dir)
     
-    os.mkdir("../public")
-    copy_files(os.path.abspath("../static"), os.path.abspath("../public"))
+    os.mkdir(target_dir)
+    copy_files(source_dir, target_dir)
 
 
 
