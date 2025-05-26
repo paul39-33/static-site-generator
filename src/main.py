@@ -17,7 +17,7 @@ def main():
     os.mkdir(target_dir)
     copy_files(source_dir, target_dir)
 
-    #get absolute path to the necessary files
+    '''#get absolute path to the necessary files
     content_src = get_path("content", "index.md")
     template_path = get_path(None, "template.html")
     content_dest = get_path("public", "index.html")
@@ -42,7 +42,13 @@ def main():
     generate_page(glorfindel_src, template_path, glorfindel_dest)
     generate_page(tom_src, template_path, tom_dest)
     generate_page(majesty_src, template_path, majesty_dest)
-    generate_page(contact_src, template_path, contact_dest)
+    generate_page(contact_src, template_path, contact_dest)'''
+
+    generate_pages_recursive(
+        "/home/paulus/repos/bootdev/static-site-generator/content",
+        "/home/paulus/repos/bootdev/static-site-generator/template.html",
+        "/home/paulus/repos/bootdev/static-site-generator/public"
+    )
 
 
 

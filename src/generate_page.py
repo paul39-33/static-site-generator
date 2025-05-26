@@ -31,7 +31,7 @@ def generate_page(from_path, template_path, dest_path):
     dest_path_dir = os.path.dirname(dest_path)
     print(f"dest_path: {dest_path}")
     print(f"dest_path_dir: {dest_path_dir}")
-    file_name = dest_path.name
+    file_name = Path(dest_path).name
     print(f"file_name: {file_name}")
 
     #if there is no old file with similar name
@@ -55,5 +55,30 @@ def generate_page(from_path, template_path, dest_path):
                 print(f"file overwrote: {file_name}")
                 return
 
-    
-    
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    print(f"dir_path_cont: {dir_path_content}, dest_dir: {dest_dir_path}")
+
+    for item in os.listdir(dir_path_content):
+        print(f"curr_item: {item}")
+        
+        if os.path.isdir(os.path.join(dir_path_content, item)):
+            next_dir_path = Path(dir_path_content) / item
+            next_dest_path = Path(dest_dir_path) / item
+            #check if dir of same name not exist in dest path
+            if not os.path.exists(next_dest_path):
+                os.mkdir(next_dest_path)
+            generate_pages_recursive(next_dir_path, template_path, next_dest_path)
+        
+        else:
+            src_file_path = Path(dir_path_content) / item
+            file_name = src_file_path.name
+            
+            #change file name from .md to .html
+            dest_file_name = file_name.replace(".md", ".html")
+            dest_file_path = os.path.join(dest_dir_path, dest_file_name)
+            
+            #generate the html file from md file
+            generate_page(src_file_path, template_path, dest_file_path)
+
+    return
