@@ -10,15 +10,15 @@ def generate_page(from_path, template_path, dest_path):
 
     md_file = open(from_path, "r")
     md_content = md_file.read()
-    print(f"*******MD_CONTENT: {md_content}")
+    #print(f"*******MD_CONTENT: {md_content}")
 
     template_file = open(template_path, "r")
     template_content = template_file.read()
-    print(f"*******TEMPLATE_CONTENT: {template_content}\n\n")
+    #print(f"*******TEMPLATE_CONTENT: {template_content}\n\n")
 
     md_html = markdown_to_html_node(md_content).to_html()
 
-    print(f"md_html: {md_html}")
+    #print(f"md_html: {md_html}")
 
     title = extract_title(md_content)
 

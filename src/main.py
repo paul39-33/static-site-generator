@@ -18,10 +18,31 @@ def main():
     copy_files(source_dir, target_dir)
 
     #get absolute path to the necessary files
-    from_path = get_path("content", "index.md")
+    content_src = get_path("content", "index.md")
     template_path = get_path(None, "template.html")
-    dest_path = get_path("public", "index.html")
-    generate_page(from_path, template_path, dest_path)
+    content_dest = get_path("public", "index.html")
+    generate_page(content_src, template_path, content_dest)
+
+    #blog glorfindel
+    glorfindel_src = get_path("content/blog/glorfindel", "index.md")
+    glorfindel_dest = get_path("public/blog/glorfindel", "index.html")
+
+    #blog tom
+    tom_src = get_path("content/blog/tom", "index.md")
+    tom_dest = get_path("public/blog/tom", "index.html")
+
+    #blog majesty
+    majesty_src = get_path("content/blog/majesty", "index.md")
+    majesty_dest = get_path("public/blog/majesty", "index.html")
+
+    #contact
+    contact_src = get_path("content/contact", "index.md")
+    contact_dest = get_path("public/contact", "index.html")
+
+    generate_page(glorfindel_src, template_path, glorfindel_dest)
+    generate_page(tom_src, template_path, tom_dest)
+    generate_page(majesty_src, template_path, majesty_dest)
+    generate_page(contact_src, template_path, contact_dest)
 
 
 
