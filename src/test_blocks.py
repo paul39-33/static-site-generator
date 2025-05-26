@@ -151,6 +151,52 @@ while this **should** _change_
             "<div><pre><code>This is text that _should_ remain\nthe **same**\n</code></pre><p>while this <b>should</b> <i>change</i></p></div>"
         )
 
+    def test_extract_title1(self):
+        md = """
+# Heading 1
+Some text here.
+## Not matched
+# Another heading
+"""
+        h1 = extract_title(md)
+        self.assertEqual(
+            h1, "Heading 1"
+        )
+    
+    def test_extract_title2(self):
+        md = """
+### This has
+## No title
+oh yea
+"""
+        with self.assertRaises(Exception) as context:
+            extract_title(md)
+        
+        self.assertEqual(str(context.exception), "No h1 found.")
+
+    def test_markdown_to_html_node_ul(self):
+        md="""
+- text 1
+- text 2
+- **text** 3
+"""
+        ul_html = markdown_to_html_node(md).to_html()
+        self.assertEqual(
+            ul_html,
+            "<div><ul><li> text 1</li><li> text 2</li><li> <b>text</b> 3</li></ul></div>"
+        )
+
+    def test_markdown_to_html_node_blockquote(self):
+        md="""
+> "I am in fact a Hobbit in all but size."
+>
+> -- J.R.R. Tolkien
+"""
+        blockquote_html = markdown_to_html_node(md).to_html()
+        self.assertEqual(
+            blockquote_html,
+            '<div><blockquote>"I am in fact a Hobbit in all but size."\n\n-- J.R.R. Tolkien</blockquote></div>'
+        )
 
 if __name__ == "__main__":
     unittest.main()

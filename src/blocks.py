@@ -11,6 +11,7 @@ class BlockType(Enum):
 
 #Takes markdown texts and return a list of blocks
 def markdown_to_blocks(markdown):
+    #clean newlines thats more than 3x
     clean_excess_newlines = re.sub(r'\n{3,}', '\n\n', markdown)
     split_the_newlines = clean_excess_newlines.split('\n\n')
     final_result = []
@@ -72,7 +73,7 @@ def markdown_to_html_node(markdown):
             #Example "### My Title", then returns match.group(1) = "###"
             #and match.group(2) = "My Title"
             heading_level = len(match.group(1))
-            block_node = HTMLNode(f'h{heading_level}', children=[text_to_children(match.group(2))])
+            block_node = HTMLNode(f'h{heading_level}', children=text_to_children(match.group(2)))
             #print(f"=========BLOCK_NODE_HEADING : {block_node}")
             block_nodes.append(block_node)
 
@@ -89,38 +90,40 @@ def markdown_to_html_node(markdown):
 
         if block_type == BlockType.QUOTE:
             lines = block.split("\n")
-
-            for line in lines:
+            #print(f"BLOCKQUOTE lines1: {lines}")
+            for i in range (0, len(lines)):
                 #remove the ">" and also a space after it
-                if line.startswith(">"):
-                    line = line[1:]
-                    if line.startswith(" "):
-                        line = line[1:]
-
-            content = " ".join(lines)
-            block_node = HTMLNode('blockquote', children=[text_to_children(content)])
+                if lines[i].startswith(">"):
+                    lines[i] = lines[i][1:]
+                    if lines[i].startswith(" "):
+                        lines[i] = lines[i][1:]
+            #print(f"BLOCKQUOTE lines2: {lines}")
+            content = "\n".join(lines)
+            #print(f"BLOCKQUOTE content: {content}")
+            block_node = HTMLNode('blockquote', children=[HTMLNode(None, content)])
             #print(f"=========BLOCK_NODE_QUOTE : {block_node}")
             block_nodes.append(block_node)
 
         if block_type == BlockType.UNORDERED_LIST:
             lines = block.split("\n")
             ul_child_nodes = []
-            for line in lines:
-                line = line[2:]
-                line_node = HTMLNode('li', text_to_children(line))
+            for i in range(0, len(lines)):
+                lines[i] = lines[i][2:]
+                line_node = HTMLNode('li', children=text_to_children(lines[i]))
+                #print(f"UL LINE NODE: {line_node}")
                 ul_child_nodes.append(line_node)
-            block_node = HTMLNode('ul', children=[ul_child_nodes])
+            block_node = HTMLNode('ul', children=ul_child_nodes)
             #print(f"=========BLOCK_NODE_UL : {block_node}")
             block_nodes.append(block_node)
         
         if block_type == BlockType.ORDERED_LIST:
             lines = block.split("\n")
             ol_child_nodes = []
-            for line in lines:
-                line = line[3:]
-                line_node = HTMLNode('li', text_to_children(line))
+            for i in range(0, len(lines)):
+                lines[i] = lines[i][3:]
+                line_node = HTMLNode('li', children=text_to_children(lines[i]))
                 ol_child_nodes.append(line_node)
-            block_node = HTMLNode('ol', children=[ol_child_nodes])
+            block_node = HTMLNode('ol', children=ol_child_nodes)
             #print(f"=========BLOCK_NODE_OL : {block_node}")
             block_nodes.append(block_node)
         
@@ -131,9 +134,20 @@ def markdown_to_html_node(markdown):
             #print(f"=========BLOCK_NODE_PARAGRAPH : {block_node}")
             block_nodes.append(block_node)
 
-    print(f"FINAL BLOCK_NODES: {HTMLNode('div', children=block_nodes)}")
+    #print(f"FINAL BLOCK_NODES: {HTMLNode('div', children=block_nodes)}")
 
     return HTMLNode('div', children=block_nodes)
+
+def extract_title(markdown):
+    #find h1 line, that starts with "# "
+    match = re.findall(r'^# (.+)', markdown, re.MULTILINE)
+    #Return only a single title instead of a list
+    title = match[0] if match else None
+
+    if not title:
+        raise Exception("No h1 found.")
+    
+    return title
             
 
 

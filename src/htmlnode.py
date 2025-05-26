@@ -6,7 +6,7 @@ class HTMLNode:
         self.props = props
 
     def to_html(self):
-        #print(f"\n\n\ntag: {self.tag}, value: {self.value}, children: {self.children}, props: {self.props}\n\n\n")
+        print(f"\ntag: {self.tag}, value: {self.value}, children: {self.children}, props: {self.props}")
         #raise NotImplementedError
         final_html_text =''
 
@@ -18,7 +18,7 @@ class HTMLNode:
         final_html_text += f"<{self.tag}"
 
         if self.props:
-            props_text = child.props_to_html()
+            props_text = ' ' + self.props_to_html()
             final_html_text += props_text
 
         final_html_text += ">"
@@ -34,7 +34,8 @@ class HTMLNode:
 
         
         final_html_text += f"</{self.tag}>"
-        #print(f"\n\nFINAL HTML TEXT: {final_html_text}\n\n\n")        
+        print(f"\nFINAL HTML TEXT: {final_html_text}")
+        final_html_text += "\n"    
         return final_html_text
 
     
@@ -53,13 +54,14 @@ class HTMLNode:
 
 
 class LeafNode(HTMLNode):
-    def __init__(self, tag, value, props=None):
+    def __init__(self, tag, value=None, props=None):
         super().__init__(tag, value, [], props)
 
     #Example ('a', "Visit Boot.dev", "href": "https://boot.dev")
     def to_html(self):
-        if not self.value:
-            raise ValueError("Node needs a value")
+        print(f"\nSELF: {self}")
+        '''if not self.value:
+            raise ValueError("Node needs a value")'''
         if not self.tag:
             return str(self.value)
 
@@ -69,7 +71,10 @@ class LeafNode(HTMLNode):
             props_html = ' ' + self.props_to_html()
         
         #Example <a href="https://boot.dev">Visit Boot.dev</a>
-        html_node = f"<{self.tag}{props_html}>{self.value}</{self.tag}>"
+        if self.tag == "img":
+            html_node = f"<{self.tag}{props_html}>"
+        else:
+            html_node = f"<{self.tag}{props_html}>{self.value}</{self.tag}>"
         #print(f"=========to_html: {html_node}")
         return html_node
 

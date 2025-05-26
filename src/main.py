@@ -1,8 +1,10 @@
 from textnode import *
 from htmlnode import *
 from blocks import *
+from generate_page import *
 import os
 import shutil
+from pathlib import Path
 
 def main():
 
@@ -14,6 +16,12 @@ def main():
     
     os.mkdir(target_dir)
     copy_files(source_dir, target_dir)
+
+    #get absolute path to the necessary files
+    from_path = get_path("content", "index.md")
+    template_path = get_path(None, "template.html")
+    dest_path = get_path("public", "index.html")
+    generate_page(from_path, template_path, dest_path)
 
 
 
@@ -45,7 +53,20 @@ def copy_files(source, target):
         
     return 
 
-
+def get_path(dir_name=None, file_name=None):
+    print(f"dir_name: {dir_name}, file_name: {file_name}")
+    '''
+    How to use:
+        if current directory is in static-site/src/main.py and wants to target static-site/content/index.md
+        then call get_path("content", "index.md")
+    '''
+    script_path = Path(__file__).resolve()
+    script_dir = script_path.parent
+    if not dir_name:
+        target_path = (script_dir.parent / file_name).resolve()
+        return target_path
+    target_path = (script_dir.parent / dir_name / file_name).resolve()
+    return target_path
 
 
     
