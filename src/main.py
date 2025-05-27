@@ -5,49 +5,31 @@ from generate_page import *
 import os
 import shutil
 from pathlib import Path
+import sys
 
 def main():
 
-    #delete public dir before remaking it
+    #get basepath from the CLI argument
+    print(f"argv[1]: {sys.argv[1]}")
+    if not sys.argv[1]:
+        basepath = '/'
+    else:
+        basepath = sys.argv[1]
+
+    #delete docs dir before remaking it
     source_dir = os.path.abspath("static")
-    target_dir = os.path.abspath("public")
+    target_dir = os.path.abspath("docs")
     if os.path.exists(target_dir):
         shutil.rmtree(target_dir)
     
     os.mkdir(target_dir)
     copy_files(source_dir, target_dir)
 
-    '''#get absolute path to the necessary files
-    content_src = get_path("content", "index.md")
-    template_path = get_path(None, "template.html")
-    content_dest = get_path("public", "index.html")
-    generate_page(content_src, template_path, content_dest)
-
-    #blog glorfindel
-    glorfindel_src = get_path("content/blog/glorfindel", "index.md")
-    glorfindel_dest = get_path("public/blog/glorfindel", "index.html")
-
-    #blog tom
-    tom_src = get_path("content/blog/tom", "index.md")
-    tom_dest = get_path("public/blog/tom", "index.html")
-
-    #blog majesty
-    majesty_src = get_path("content/blog/majesty", "index.md")
-    majesty_dest = get_path("public/blog/majesty", "index.html")
-
-    #contact
-    contact_src = get_path("content/contact", "index.md")
-    contact_dest = get_path("public/contact", "index.html")
-
-    generate_page(glorfindel_src, template_path, glorfindel_dest)
-    generate_page(tom_src, template_path, tom_dest)
-    generate_page(majesty_src, template_path, majesty_dest)
-    generate_page(contact_src, template_path, contact_dest)'''
-
     generate_pages_recursive(
-        "/home/paulus/repos/bootdev/static-site-generator/content",
-        "/home/paulus/repos/bootdev/static-site-generator/template.html",
-        "/home/paulus/repos/bootdev/static-site-generator/public"
+        f"{str(Path(__file__).parent.parent.resolve())}/content",
+        f"{str(Path(__file__).parent.parent.resolve())}/template.html",
+        f"{str(Path(__file__).parent.parent.resolve())}/docs",
+        basepath
     )
 
 

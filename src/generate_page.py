@@ -5,7 +5,8 @@ from textnode import *
 import os
 from pathlib import Path
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
+
     print(f"Generating page from {from_path} to {dest_path} using {template_path}.")
 
     md_file = open(from_path, "r")
@@ -24,7 +25,8 @@ def generate_page(from_path, template_path, dest_path):
 
     template_content = template_content.replace("{{ Title }}", title)
     template_content = template_content.replace("{{ Content }}", md_html)
-
+    template_content = template_content.replace('href="/', f'href="{basepath}/')
+    template_content = template_content.replace('src="/', f'src="{basepath}/')
     print(f"=====TEMPLATE CONTENT: {template_content}")
 
     #get the result file name
@@ -56,7 +58,7 @@ def generate_page(from_path, template_path, dest_path):
                 return
 
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     print(f"dir_path_cont: {dir_path_content}, dest_dir: {dest_dir_path}")
 
     for item in os.listdir(dir_path_content):
@@ -68,7 +70,7 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
             #check if dir of same name not exist in dest path
             if not os.path.exists(next_dest_path):
                 os.mkdir(next_dest_path)
-            generate_pages_recursive(next_dir_path, template_path, next_dest_path)
+            generate_pages_recursive(next_dir_path, template_path, next_dest_path, basepath)
         
         else:
             src_file_path = Path(dir_path_content) / item
@@ -79,6 +81,6 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
             dest_file_path = os.path.join(dest_dir_path, dest_file_name)
             
             #generate the html file from md file
-            generate_page(src_file_path, template_path, dest_file_path)
+            generate_page(src_file_path, template_path, dest_file_path, basepath)
 
     return
